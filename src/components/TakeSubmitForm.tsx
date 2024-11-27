@@ -1,14 +1,53 @@
+import { ChangeEvent, FormEvent, useState } from "react";
+import { v4 as uuid } from "uuid";
+import { PlusCircle } from "phosphor-react";
 
+import styles from "./TaskSubmitForm.module.scss"
 
+type TaskTypes = {
+   id: string;
+   title: string;
+   isComplete: boolean;
+}
 
-import React from 'react'
+type TaskSubmitFormProps = {
+   tasks: TaskTypes;
+   setTasks: React.Dispatch<React.SetStateAction<TaskTypes[]>>;
+}
 
-const TakeSubmitForm = () => {
+const TakeSubmitForm = ({tasks, setTasks}: TaskSubmitFormProps) => {
+  
+  const [newTask, setNewTask] = useState('')
+
+  function handleTaskSubmit(event: FormEvent) {
+      event.preventDefault()
+    
+      setTasks([{ id: uuid(), title: newTask, isComplete: false }, ...tasks]);
+      setNewTask("");
+    }
+    
+    function handleTaskInput(event: ChangeEvent<HTMLInputElement>) {
+      setNewTask(event.target.value);
+    }
+  
+  
   return (
-    <div>
-      
-    </div>
+    <form onSubmit={handleTaskSubmit} className={styles.form}>
+      <input
+        type="text"
+        placeholder="Adicione uma nova tarefa..."
+        value={newTask}
+        onChange={handleTaskInput}
+        required
+      />
+      <button type="submit" title="Criar nova tarefa">
+        Criar <PlusCircle />
+      </button>
+    </form>
   )
 }
 
-export default TakeSubmitForm
+export {
+  TakeSubmitForm,
+  TaskTypes 
+}
